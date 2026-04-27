@@ -1,0 +1,12 @@
+type Query {
+    getAllFlights: [Flight]
+    getFlightById(id: ID!): Flight
+}
+
+type Flight {
+    id: ID
+    flightNumber: String
+    origin: String
+    destination: String
+    availableSeats: Int
+}

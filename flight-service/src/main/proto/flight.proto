@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_package = "com.flightservice.flightservice.grpc";
+option java_outer_classname = "FlightProto";
+
+service FlightGrpcService {
+  rpc GetFlightById (FlightRequest) returns (FlightResponse);
+  rpc GetAllFlights (EmptyRequest) returns (FlightListResponse);
+}
+
+message FlightRequest {
+  int64 id = 1;
+}
+
+message EmptyRequest {}
+
+message FlightResponse {
+  int64 id = 1;
+  string flightNumber = 2;
+  string origin = 3;
+  string destination = 4;
+  int32 availableSeats = 5;
+}
+
+message FlightListResponse {
+  repeated FlightResponse flights = 1;
+}

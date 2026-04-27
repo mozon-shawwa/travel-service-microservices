@@ -1,12 +1,12 @@
 package com.bookingservice.bookingservice.services;
 
+import com.bookingservice.bookingservice.grpc.FlightGrpcClient;
 import com.bookingservice.bookingservice.models.Booking;
-import com.bookingservice.bookingservice.models.FlightResponse;
 import com.bookingservice.bookingservice.repositories.BookingRepository;
+import com.flightservice.flightservice.grpc.FlightProto;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class BookingService {
@@ -15,9 +15,7 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    private static final String FLIGHT_SERVICE_URL = "http://localhost:9001/flights/";
+    private FlightGrpcClient flightGrpcClient;
 
     // جلب كل الحجوزات
     public List<Booking> getAllBookings() {
@@ -29,12 +27,11 @@ public class BookingService {
         return this.bookingRepository.findById(id).get();
     }
 
-    // إنشاء حجز جديد مع التحقق من توفر الرحلة
+    // إنشاء حجز جديد عبر gRPC
     public Booking createBooking(Long customerId, Long flightId) {
-        FlightResponse flight = restTemplate.getForObject(
-                FLIGHT_SERVICE_URL + flightId,
-                FlightResponse.class
-        );
+
+        // التحقق من توفر الرحلة عبر gRPC
+        FlightProto.FlightResponse flight = flightGrpcClient.getFlightById(flightId);
 
         if (flight == null || flight.getAvailableSeats() <= 0) {
             throw new RuntimeException("No available seats for this flight");
