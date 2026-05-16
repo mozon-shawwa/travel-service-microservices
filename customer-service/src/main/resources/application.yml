@@ -1,36 +1,23 @@
 server:
-  port: 9001
+  port: 9003
 
 spring:
   application:
-    name: FLIGHT-SERVICE
+    name: CUSTOMER-SERVICE
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/flight_db?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/customer_db?serverTimezone=UTC
     username: root
-    password:
-  sql:
-    init:
-      mode: always
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
-
-  spring:
-    graphql:
-      graphiql:
-        enabled: true
-
-grpc:
-  server:
-    port: 9090
-
 eureka:
   client:
     service-url:

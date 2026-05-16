@@ -2,10 +2,9 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'com.google.protobuf' version '0.9.4'
 }
 
-group = 'com.bookingservice'
+group = 'com.customerservice'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -24,55 +23,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'net.devh:grpc-client-spring-boot-starter:2.15.0.RELEASE'
-    implementation 'io.grpc:grpc-protobuf:1.58.0'
-    implementation 'io.grpc:grpc-stub:1.58.0'
-    implementation 'io.grpc:grpc-core:1.58.0'
-    implementation 'io.grpc:grpc-api:1.58.0'
-    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
-
-    runtimeOnly 'com.mysql:mysql-connector-j'
     compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-sourceSets {
-    main {
-        proto {
-            srcDir 'src/main/proto'
-        }
-        resources {
-            exclude '**/*.proto'
-        }
-    }
-}
-
-protobuf {
-    protoc {
-        artifact = 'com.google.protobuf:protoc:3.25.3'
-    }
-    plugins {
-        grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.62.2'
-        }
-    }
-    generateProtoTasks {
-        all()*.plugins {
-            grpc {}
-        }
-    }
 }
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
-tasks.named('processResources') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
