@@ -3,8 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'flight-service/**'
+ 
 
 jobs:
   build-and-push:
