@@ -1,0 +1,99 @@
+services:
+  # قاعدة البيانات
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - travel-network
+
+  # دليل الخدمات
+  service-registry:
+    build: ./service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - travel-network
+
+  # بوابة الخدمات
+  cloud-gateway:
+    build: ./cloud-gateway
+    ports:
+      - "8089:8089"
+    depends_on:
+      - service-registry
+    restart: always
+    networks:
+      - travel-network
+
+  # خدمة الزبائن
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "9003:9003"
+    depends_on:
+      - service-registry
+      - mysql-db
+    restart: always
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/customer_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - travel-network
+
+  # خدمة الطيران
+  flight-service:
+    build: ./flight-service
+    ports:
+      - "9001:9001"
+    depends_on:
+      - service-registry
+      - mysql-db
+    restart: always
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/flight_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - travel-network
+
+  # خدمة الحجوزات
+  booking-service:
+    build: ./booking-service
+    ports:
+      - "9002:9002"
+    depends_on:
+      - service-registry
+      - mysql-db
+    restart: always
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/booking_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - travel-network
+
+  # خدمة الدفع
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "9004:9004"
+    depends_on:
+      - service-registry
+      - mysql-db
+    restart: always
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/payment_db?createDatabaseIfNotExist=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - travel-network
+
+networks:
+  travel-network:
+    driver: bridge

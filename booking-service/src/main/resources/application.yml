@@ -6,9 +6,9 @@ spring:
     name: BOOKING-SERVICE
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/booking_db?serverTimezone=UTC
+    url: jdbc:mysql://mysql-db:3306/booking_db?serverTimezone=UTC
     username: root
-    password:
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,11 +20,11 @@ spring:
 grpc:
   client:
     flight-service:
-      address: static://127.0.0.1:9090
+      address: static://flight-service:9090
       negotiation-type: plaintext
       enable-keep-alive: true
       keep-alive-without-calls: true
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+    serviceUrl:
+      defaultZone: http://service-registry:8761/eureka/
